@@ -31,7 +31,7 @@ An **enhanced personal notepad** built with **HTML** and **JavaScript**, featuri
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/advanced-personal-notepad.git
+git clone https://github.com/mithleshprasad/Advanced-Personal-Notepad.git
 cd advanced-personal-notepad
 ```
 
