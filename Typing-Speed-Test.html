@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Speed Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 800px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    #text-to-type {
+      font-size: 20px;
+      margin: 20px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      width: 100%;
+      height: 100px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background-color: #f1f1f1;
+      font-family: monospace;
+      color: #333;
+      line-height: 1.6;
+      text-align: left;
+      overflow-y: auto;
+    }
+    input {
+      font-size: 18px;
+      padding: 10px;
+      width: 100%;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+    .stats {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    .stat-item {
+      margin: 5px 0;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .error {
+      color: red;
+    }
+    .correct {
+      color: green;
+    }
+    .completed {
+      font-size: 24px;
+      color: blue;
+      margin-top: 20px;
+    }
+    #typed-text:disabled {
+      background-color: #e9ecef;
+    }
+    .highlight-correct {
+      color: green;
+    }
+    .highlight-incorrect {
+      color: red;
+    }
+  </style>
+  <!-- For PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Typing Speed Test</h1>
+    <div id="text-to-type">The quick brown fox jumps over the lazy dog.</div>
+    <input type="text" id="typed-text" placeholder="Start typing..." oninput="checkTyping()" disabled>
+    
+    <div class="stats">
+      <div class="stat-item">Time: <span id="timer">0</span> seconds</div>
+      <div class="stat-item">Words Typed: <span id="word-count">0</span></div>
+      <div class="stat-item">Typing Speed: <span id="wpm">0</span> WPM</div>
+    </div>
+
+    <button onclick="startTest()">Start Test</button>
+    <button onclick="stopTest()">Stop Test</button>
+    <div id="completion-message" class="completed"></div>
+
+    <button onclick="downloadCSV()">Download CSV</button>
+    <button onclick="downloadPDF()">Download PDF</button>
+  </div>
+
+  <script>
+    const texts = [
+      "The quick brown fox jumps over the lazy dog.",
+      "A journey of a thousand miles begins with a single step.",
+      "To be or not to be, that is the question.",
+      "All that glitters is not gold.",
+      "The only limit to our realization of tomorrow is our doubts of today.",
+      "In the end, we will remember not the words of our enemies, but the silence of our friends.",
+      "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+      "It is never too late to be what you might have been.",
+      "The future belongs to those who believe in the beauty of their dreams.",
+      "Believe you can and you're halfway there.",
+      "You miss 100% of the shots you don't take.",
+      "I have not failed. I've just found 10,000 ways that won't work.",
+      "The best way to predict the future is to create it.",
+      "The only way to do great work is to love what you do.",
+      "If you want to live a happy life, tie it to a goal, not to people or things.",
+      "It does not matter how slowly you go as long as you do not stop.",
+      "Keep your face always toward the sunshine—and shadows will fall behind you.",
+      "You must be the change you wish to see in the world.",
+      "It always seems impossible until it’s done.",
+      "The purpose of life is not to be happy. It is to be useful, to be honorable, to be compassionate, to have it make some difference that you have lived and lived well."
+    ];
+
+    let startTime;
+    let wordCount = 0;
+    let timerInterval;
+    let typingStarted = false;
+    let timeElapsed = 0;
+    let testRunning = false;
+
+    function getRandomText() {
+      return texts[Math.floor(Math.random() * texts.length)];
+    }
+
+    function startTest() {
+      if (testRunning) return;
+
+      // Get a random text and display it
+      const randomText = getRandomText();
+      document.getElementById('text-to-type').textContent = randomText;
+
+      // Reset the input field and stats
+      document.getElementById('typed-text').value = '';
+      document.getElementById('typed-text').disabled = false;
+      document.getElementById('typed-text').focus();
+      document.getElementById('completion-message').textContent = '';
+
+      // Reset stats
+      document.getElementById('timer').textContent = 0;
+      document.getElementById('word-count').textContent = 0;
+      document.getElementById('wpm').textContent = 0;
+
+      wordCount = 0;
+      typingStarted = false;
+
+      // Start timer
+      startTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
+      testRunning = true;
+    }
+
+    function updateTimer() {
+      timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('timer').textContent = timeElapsed;
+
+      if (typingStarted && timeElapsed > 0) {
+        // Calculate WPM
+        const wpm = Math.round(wordCount / (timeElapsed / 60));
+        document.getElementById('wpm').textContent = wpm;
+      }
+    }
+
+    function checkTyping() {
+      const typedText = document.getElementById('typed-text').value;
+      const targetText = document.getElementById('text-to-type').textContent;
+
+      // Highlight correct and incorrect text
+      const typedTextArray = typedText.split('');
+      const targetTextArray = targetText.split('');
+      let highlightedText = '';
+
+      // Loop through each character and compare
+      for (let i = 0; i < typedTextArray.length; i++) {
+        if (typedTextArray[i] === targetTextArray[i]) {
+          highlightedText += `<span class="highlight-correct">${typedTextArray[i]}</span>`;
+        } else {
+          highlightedText += `<span class="highlight-incorrect">${typedTextArray[i]}</span>`;
+        }
+      }
+
+      // Add the remaining characters from target text if they aren't typed yet
+      for (let i = typedTextArray.length; i < targetTextArray.length; i++) {
+        highlightedText += targetTextArray[i];
+      }
+
+      // Set the highlighted text to the target text display area
+      document.getElementById('text-to-type').innerHTML = highlightedText;
+
+      if (!typingStarted) {
+        typingStarted = true;
+      }
+
+      // Count words typed
+      wordCount = typedText.trim().split(/\s+/).length;
+
+      // Update word count
+      document.getElementById('word-count').textContent = wordCount;
+
+      // Check if test is completed
+      if (typedText === targetText) {
+        clearInterval(timerInterval);
+        document.getElementById('typed-text').disabled = true;
+        document.getElementById('completion-message').textContent = `Test Completed! Your typing speed is: ${document.getElementById('wpm').textContent} WPM`;
+        testRunning = false;
+      }
+    }
+
+    // Stop Test function
+    function stopTest() {
+      clearInterval(timerInterval);
+      document.getElementById('typed-text').disabled = true;
+      document.getElementById('completion-message').textContent = `Test Stopped. Final Speed: ${document.getElementById('wpm').textContent} WPM`;
+      testRunning = false;
+    }
+
+    // Download CSV function
+    function downloadCSV() {
+      const csvContent = `Word Count,Typing Speed (WPM)\n${wordCount},${document.getElementById('wpm').textContent}`;
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'typing_speed_report.csv';
+      link.click();
+    }
+
+    // Download PDF function
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text(`Typing Speed Report`, 20, 20);
+      doc.text(`Words Typed: ${wordCount}`, 20, 50);
+      doc.text(`Typing Speed: ${document.getElementById('wpm').textContent} WPM`, 20, 60);
+      doc.save('typing_speed_report.pdf');
+    }
+  </script>
+</body>
+</html>
