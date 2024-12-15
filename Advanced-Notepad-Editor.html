@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Notepad</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    .container {
+      width: 90%;
+      max-width: 900px;
+      margin: 20px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .toolbar button, .toolbar select {
+      margin: 5px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #007bff;
+      color: #fff;
+    }
+    .toolbar button:hover {
+      background: #0056b3;
+    }
+    .toolbar select {
+      cursor: pointer;
+      background: #fff;
+      color: #333;
+      border: 1px solid #ccc;
+    }
+    #editor {
+      width: 100%;
+      height: 300px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 16px;
+      background: #fff;
+      overflow-y: auto;
+    }
+    #search {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: calc(100% - 20px);
+    }
+    .highlight {
+      background-color: yellow;
+    }
+    .language-select {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Advanced Notepad Editor</h1>
+
+    <!-- Toolbar for Rich Text Formatting -->
+    <div class="toolbar">
+      <button onclick="format('bold')">Bold</button>
+      <button onclick="format('italic')">Italic</button>
+      <button onclick="format('underline')">Underline</button>
+      <button onclick="format('strikeThrough')">Strike</button>
+      <button onclick="format('insertUnorderedList')">Bullet List</button>
+      <button onclick="format('insertOrderedList')">Numbered List</button>
+      <button onclick="format('justifyLeft')">Align Left</button>
+      <button onclick="format('justifyCenter')">Center</button>
+      <button onclick="format('justifyRight')">Align Right</button>
+      <select onchange="changeFont(this.value)">
+        <option value="" disabled selected>Font</option>
+        <option value="Arial">Arial</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Verdana">Verdana</option>
+      </select>
+      <select onchange="changeFontSize(this.value)">
+        <option value="" disabled selected>Font Size</option>
+        <option value="2">Small</option>
+        <option value="4">Normal</option>
+        <option value="6">Large</option>
+      </select>
+      <input type="color" onchange="changeColor(this.value)" title="Change Text Color">
+    </div>
+
+    <!-- Editable Rich Text Area -->
+    <div id="editor" contenteditable="true" placeholder="Start typing..."></div>
+
+    <!-- Search Functionality -->
+    <input type="text" id="search" placeholder="Search in notes..." oninput="searchText()">
+
+    <!-- Language Selector -->
+    <div class="language-select">
+      <label for="language">Choose Language:</label>
+      <select id="language" onchange="changeLanguage()">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="hi">हिंदी</option>
+      </select>
+    </div>
+  </div>
+
+  <script>
+    // Rich Text Formatting
+    function format(command) {
+      document.execCommand(command, false, null);
+    }
+
+    function changeFont(fontName) {
+      document.execCommand('fontName', false, fontName);
+    }
+
+    function changeFontSize(fontSize) {
+      document.execCommand('fontSize', false, fontSize);
+    }
+
+    function changeColor(color) {
+      document.execCommand('foreColor', false, color);
+    }
+
+    // Search and Highlight
+    function searchText() {
+      const searchBox = document.getElementById('search');
+      const editor = document.getElementById('editor');
+      const text = editor.innerHTML;
+      const query = searchBox.value;
+
+      // Remove previous highlights
+      editor.innerHTML = text.replace(/<span class="highlight">|<\/span>/g, '');
+
+      if (query) {
+        const regex = new RegExp(`(${query})`, 'gi');
+        editor.innerHTML = editor.innerHTML.replace(regex, '<span class="highlight">$1</span>');
+      }
+    }
+
+    // Multi-language Support
+    const translations = {
+      en: { title: 'Advanced Notepad', placeholder: 'Start typing...', search: 'Search in notes...', language: 'Choose Language:' },
+      es: { title: 'Bloc de Notas Avanzado', placeholder: 'Empieza a escribir...', search: 'Buscar en notas...', language: 'Elige idioma:' },
+      fr: { title: 'Bloc-notes Avancé', placeholder: 'Commencez à écrire...', search: 'Rechercher dans les notes...', language: 'Choisir la langue:' },
+      de: { title: 'Erweiterter Notizblock', placeholder: 'Fangen Sie an zu tippen...', search: 'In Notizen suchen...', language: 'Sprache wählen:' },
+      hi: { title: 'उन्नत नोटपैड', placeholder: 'टाइप करना शुरू करें...', search: 'नोट्स में खोजें...', language: 'भाषा चुनें:' },
+    };
+
+    function changeLanguage() {
+      const language = document.getElementById('language').value;
+      const translation = translations[language] || translations.en;
+
+      document.querySelector('h1').innerText = translation.title;
+      document.getElementById('editor').setAttribute('placeholder', translation.placeholder);
+      document.getElementById('search').setAttribute('placeholder', translation.search);
+      document.querySelector('label[for="language"]').innerText = translation.language;
+    }
+  </script>
+</body>
+</html>
