@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Speed Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 800px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    #text-to-type {
+      font-size: 20px;
+      margin: 20px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      width: 100%;
+      height: 100px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background-color: #f1f1f1;
+      font-family: monospace;
+      color: #333;
+      line-height: 1.6;
+      text-align: left;
+      overflow-y: auto;
+    }
+    input {
+      font-size: 18px;
+      padding: 10px;
+      width: 100%;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+    .stats {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    .stat-item {
+      margin: 5px 0;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .error {
+      color: red;
+    }
+    .correct {
+      color: green;
+    }
+    .completed {
+      font-size: 24px;
+      color: blue;
+      margin-top: 20px;
+    }
+    #typed-text:disabled {
+      background-color: #e9ecef;
+    }
+    .highlight-correct {
+      color: green;
+    }
+    .highlight-incorrect {
+      color: red;
+    }
+  </style>
+  <!-- For PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Typing Speed Test</h1>
+    <div id="text-to-type">The quick brown fox jumps over the lazy dog.</div>
+    <input type="text" id="typed-text" placeholder="Start typing..." oninput="checkTyping()" disabled>
+    
+    <div class="stats">
+      <div class="stat-item">Time: <span id="timer">0</span> seconds</div>
+      <div class="stat-item">Words Typed: <span id="word-count">0</span></div>
+      <div class="stat-item">Typing Speed: <span id="wpm">0</span> WPM</div>
+    </div>
+    
+    <button onclick="startTest()">Start Test</button>
+    <button onclick="stopTest()">Stop Test</button>
+    <button onclick="resetTest()">Reset Test</button>
+    <div id="completion-message" class="completed"></div>
+    <button onclick="downloadCSV()">Download CSV</button>
+    <button onclick="downloadPDF()">Download PDF</button>
+
+    <hr>
+    <h2>Manage Typing Content</h2>
+    <textarea id="new-content" placeholder="Add new content here..." rows="4" style="width: 100%; margin-bottom: 10px;"></textarea>
+    <button onclick="addContent()">Add Content</button>
+    <button onclick="editContent()">Edit Current Content</button>
+  </div>
+
+  <script>
+      const texts = [
+      "The world is a constantly changing place, full of challenges, opportunities, and moments that define our existence. Every sunrise brings with it a new chance to shape our future, to learn from the past, and to embrace the present with open arms. Life is a series of choices, each one leading us down a unique path. The journey is often more important than the destination, teaching us resilience, courage, and the value of perseverance. In every challenge lies the seed of growth, and in every failure, the blueprint of success. Dreams fuel our ambitions, but it is determination and hard work that transform them into reality. Relationships form the cornerstone of our lives, offering support, understanding, and the joy of connection. Nature, in all its beauty and complexity, reminds us of the delicate balance that sustains life. The rhythm of the seasons, the ebb and flow of the tides, and the infinite expanse of the stars above inspire awe and humility. Time, our most precious resource, teaches us to cherish moments, make memories, and leave a legacy. As technology advances, it reshapes the way we live, work, and interact, bridging distances but also presenting new challenges to our humanity. Education opens doors to knowledge, empowering us to think critically, act responsibly, and contribute meaningfully to society. Health, both physical and mental, underscores the importance of balance, self-care, and the interconnectedness of body and mind. Art and culture, expressions of our shared human experience, enrich our lives and broaden our perspectives. Kindness and compassion, simple yet profound, have the power to heal wounds, bridge divides, and foster understanding. Leadership, whether in our personal lives or on a larger stage, calls for vision, integrity, and the courage to make difficult decisions. In a world of constant noise and distraction, mindfulness helps us find clarity, focus, and peace. Diversity, in all its forms, is a source of strength, creativity, and innovation, reminding us that our differences make us stronger together. Change is the only constant, and adaptability is the key to thriving in uncertainty. Gratitude, a practice of recognizing and appreciating the good in our lives, cultivates joy and resilience. Ultimately, life is what we make of it. It is an invitation to grow, to give, and to make a difference in ways big and small. Each day is a new beginning, a chance to write our story and to live with purpose, passion, and authenticity.",
+      "In the vast tapestry of human experience, each thread tells a story of hope, struggle, and triumph. From the earliest days of civilization, humanity has sought to understand its place in the universe. Through science, we unravel the mysteries of the natural world, from the intricate workings of a single cell to the grandeur of galaxies billions of light-years away. Philosophy challenges us to reflect on the nature of existence, the essence of truth, and the meaning of life. Literature and art capture the breadth of human emotion, giving voice to love, loss, joy, and sorrow in ways that resonate across time and culture. History, a chronicle of human endeavor, reminds us of the lessons learned and the progress made, even as we grapple with recurring challenges. Technology, a testament to human ingenuity, has transformed our lives, connecting us in ways once unimaginable. Yet, with great power comes great responsibility, as we navigate ethical dilemmas and the impact of our innovations on the planet. Community, a fundamental aspect of our humanity, offers a sense of belonging, support, and shared purpose. Together, we celebrate milestones, overcome obstacles, and strive for a better future. Leadership, grounded in empathy and vision, has the potential to inspire change and unite people in pursuit of common goals. At the heart of it all, family and friendships provide the foundation of love, trust, and understanding that sustains us. Education is the beacon of enlightenment, encouraging curiosity, critical thinking, and the pursuit of truth. Health, both a personal and collective responsibility, highlights the interconnectedness of our actions and well-being. Creativity, the spark of innovation, drives progress and enriches our lives through music, literature, and the visual arts. Nature, with its boundless beauty and complexity, reminds us of the importance of stewardship and sustainability. Courage, the strength to face adversity, propels us forward in the face of uncertainty. Gratitude, a simple yet profound practice, fosters happiness and resilience. In a world of contrasts—light and shadow, chaos and order, despair and hope—it is our choices that define us. Life is a journey, not a destination, filled with opportunities to learn, grow, and contribute. By embracing our shared humanity and striving for a world of compassion, equity, and understanding, we leave a legacy that echoes through the ages.",
+      "Human progress has always been driven by curiosity and the relentless pursuit of knowledge. From the first spark of fire to the digital age, our journey as a species has been marked by milestones of discovery and innovation. Each generation builds upon the achievements of the past, pushing the boundaries of what is possible. The power of imagination fuels creativity, enabling us to envision a future where challenges are overcome, and opportunities abound. Collaboration, across borders and disciplines, demonstrates the strength of unity and the potential of collective effort. Communication, the bridge that connects us, fosters understanding and collaboration, essential for growth and development. The role of mentors and educators in shaping minds and inspiring dreams cannot be overstated. As we continue to advance, ethical considerations guide our decisions, ensuring that progress benefits humanity and preserves the planet. Resilience, the ability to adapt and thrive, has been a cornerstone of human survival, reminding us that setbacks are often stepping stones to success. Empathy, the capacity to understand and share the feelings of others, enhances relationships and fosters a sense of community. The arts, a reflection of society, capture the zeitgeist of an era while transcending time to inspire future generations. Environmental stewardship, a critical aspect of modern life, emphasizes the responsibility we share in protecting the natural world for future generations. Innovation, driven by necessity and vision, transforms industries and improves lives, proving that change is not only inevitable but often beneficial. Hope, an intangible yet powerful force, keeps humanity striving for a brighter tomorrow, even in the face of adversity. The stories we tell, whether through words, images, or music, shape our identity and influence how we see the world. Above all, the human spirit, characterized by its tenacity and creativity, continues to illuminate the path forward.",
+      "AThe rhythm of life is a complex interplay of moments, decisions, and experiences that weave the fabric of our existence. Every individual, unique in their journey, contributes to the collective story of humanity. The power of choice, a defining aspect of our lives, allows us to shape our destiny and impact those around us. The balance between ambition and contentment is a delicate dance, teaching us the importance of striving for our goals while appreciating the present. Relationships, the cornerstone of a fulfilling life, require effort, understanding, and mutual respect to thrive. The natural world, with its awe-inspiring beauty and resilience, serves as both a source of inspiration and a reminder of our responsibility to protect it. In the face of challenges, perseverance and adaptability become our greatest allies, enabling us to navigate the uncertainties of life. Technology, a double-edged sword, offers solutions to complex problems while demanding mindfulness in its use. Education, a lifelong endeavor, equips us with the tools to think critically and act wisely in an ever-changing world. Gratitude, a simple yet transformative practice, enhances our well-being and strengthens our connections with others. Creativity, an innate human trait, finds expression in countless forms, enriching our lives and driving progress. Courage, whether in the face of adversity or in the pursuit of dreams, defines our character and propels us forward. As we move through the stages of life, the lessons we learn shape our perspective, guiding us toward a deeper understanding of ourselves and the world. Hope, a beacon in times of darkness, inspires us to persevere and strive for a brighter future. The essence of life lies not in the pursuit of perfection but in the embrace of its imperfections, finding beauty and meaning in the journey.",
+      "The essence of humanity is rooted in our shared experiences and the values that bind us together. Compassion, a universal language, bridges differences and fosters a sense of belonging. In times of crisis, the strength of the human spirit shines through, proving our capacity to overcome adversity and support one another. Innovation and discovery have propelled us forward, opening new frontiers and redefining what is possible. The importance of ethical leadership, guided by integrity and empathy, cannot be overstated in shaping a just and equitable society. Education, a powerful tool for empowerment, unlocks potential and encourages the pursuit of truth and understanding. The arts, a celebration of creativity, provide a window into the soul of humanity, offering perspectives that challenge and inspire. Environmental sustainability, a pressing global issue, calls for collective action to safeguard the future of our planet. Relationships, both personal and communal, are the foundation of happiness and fulfillment, built on trust, respect, and shared purpose. Technology, a catalyst for change, connects us across distances while reshaping the fabric of society. Resilience, the ability to adapt and recover, is a testament to the indomitable human spirit. Gratitude, a practice of acknowledging the positive aspects of life, enhances our well-being and nurtures a sense of contentment. Courage, whether in the form of taking risks",
+      "In the end, we will remember not the words of our enemies, but the silence of our friends.",
+    ];
+    
+    let startTime;
+    let wordCount = 0;
+    let timerInterval;
+    let typingStarted = false;
+    let timeElapsed = 0;
+    let testRunning = false;
+
+    function getRandomText() {
+      return texts[Math.floor(Math.random() * texts.length)];
+    }
+
+    function startTest() {
+      if (testRunning) return;
+
+      const randomText = getRandomText();
+      document.getElementById('text-to-type').textContent = randomText;
+
+      document.getElementById('typed-text').value = '';
+      document.getElementById('typed-text').disabled = false;
+      document.getElementById('typed-text').focus();
+      document.getElementById('completion-message').textContent = '';
+      document.getElementById('timer').textContent = 0;
+      document.getElementById('word-count').textContent = 0;
+      document.getElementById('wpm').textContent = 0;
+      
+      wordCount = 0;
+      typingStarted = false;
+      startTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
+      testRunning = true;
+    }
+
+    function updateTimer() {
+      timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('timer').textContent = timeElapsed;
+
+      if (typingStarted && timeElapsed > 0) {
+        const wpm = Math.round(wordCount / (timeElapsed / 60));
+        document.getElementById('wpm').textContent = wpm;
+      }
+    }
+
+    function checkTyping() {
+      const typedText = document.getElementById('typed-text').value;
+      const targetText = document.getElementById('text-to-type').textContent;
+
+      const typedTextArray = typedText.split('');
+      const targetTextArray = targetText.split('');
+      let highlightedText = '';
+
+      for (let i = 0; i < typedTextArray.length; i++) {
+        if (typedTextArray[i] === targetTextArray[i]) {
+          highlightedText += `<span class="highlight-correct">${typedTextArray[i]}</span>`;
+        } else {
+          highlightedText += `<span class="highlight-incorrect">${typedTextArray[i]}</span>`;
+        }
+      }
+
+      for (let i = typedTextArray.length; i < targetTextArray.length; i++) {
+        highlightedText += targetTextArray[i];
+      }
+
+      document.getElementById('text-to-type').innerHTML = highlightedText;
+
+      if (!typingStarted) {
+        typingStarted = true;
+      }
+
+      wordCount = typedText.trim().split(/\s+/).length;
+      document.getElementById('word-count').textContent = wordCount;
+
+      if (typedText === targetText) {
+        clearInterval(timerInterval);
+        document.getElementById('typed-text').disabled = true;
+        document.getElementById('completion-message').textContent = `Test Completed! Your typing speed is: ${document.getElementById('wpm').textContent} WPM`;
+        testRunning = false;
+      }
+    }
+
+    function stopTest() {
+      clearInterval(timerInterval);
+      document.getElementById('typed-text').disabled = true;
+      document.getElementById('completion-message').textContent = `Test Stopped. Final Speed: ${document.getElementById('wpm').textContent} WPM`;
+      testRunning = false;
+    }
+
+    function resetTest() {
+      clearInterval(timerInterval);
+      document.getElementById('typed-text').value = '';
+      document.getElementById('typed-text').disabled = true;
+      document.getElementById('timer').textContent = 0;
+      document.getElementById('word-count').textContent = 0;
+      document.getElementById('wpm').textContent = 0;
+      document.getElementById('completion-message').textContent = '';
+      testRunning = false;
+    }
+
+    function addContent() {
+      const newContent = document.getElementById('new-content').value.trim();
+      if (newContent) {
+        texts.push(newContent);
+        alert('New content added!');
+        document.getElementById('new-content').value = '';
+      } else {
+        alert('Please enter some text to add.');
+      }
+    }
+
+    function editContent() {
+      const newContent = document.getElementById('new-content').value.trim();
+      if (newContent) {
+        document.getElementById('text-to-type').textContent = newContent;
+        alert('Current content updated!');
+      } else {
+        alert('Please enter some text to update the content.');
+      }
+    }
+
+    function downloadCSV() {
+      const csvContent = `Word Count,Typing Speed (WPM)\n${wordCount},${document.getElementById('wpm').textContent}`;
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'typing_speed_report.csv';
+      link.click();
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text(`Typing Speed Report`, 20, 20);
+      doc.text(`Words Typed: ${wordCount}`, 20, 50);
+      doc.text(`Typing Speed: ${document.getElementById('wpm').textContent} WPM`, 20, 60);
+      doc.save('typing_speed_report.pdf');
+    }
+  </script>
+</body>
+</html>
