@@ -3,223 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Advanced Personal Notepad with autosave, dark mode, and downloadable notes.">
   <title>Advanced Personal Notepad</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #f4f4f9;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .container {
-      width: 90%;
-      max-width: 1000px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    textarea {
-      width: 100%;
-      height: 250px;
-      padding: 15px;
-      font-size: 16px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      resize: none;
-      outline: none;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      transition: border-color 0.3s, background-color 0.3s;
-    }
-    textarea:focus {
-      border-color: #007BFF;
-    }
-    .buttons {
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 5px;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    select {
-      padding: 10px;
-      margin-left: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .stats {
-      margin-top: 10px;
-      font-size: 14px;
-      text-align: right;
-      color: #555;
-    }
-    .dark-mode {
-      background-color: #222;
-      color: #fff;
-    }
-    .dark-mode textarea {
-      background-color: #333;
-      color: #fff;
-      border-color: #555;
-    }
-    .autosave-notification {
-      text-align: center;
-      font-size: 14px;
-      color: green;
-      display: none;
-    }
-     footer {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #777;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="buttons">
-         <a href="https://mithleshassistant.netlify.app/">
-    <button>Jarvis Assistant!</button>
-</a>
-    <a href="Advanced-Notepad-Editor.html">
-        <button>Advanced Notepad Editor!</button>
-    </a>
-    <a href="Typing-Speed-Test.html">
-        <button>Typing Speed Test!</button>
-    </a>
-   <a href="typing.html">
-    <button>UpComing Typing Speed Test 2.0 !</button>
-</a>
-
-
-</div>
+  <header>
     <h1>Advanced Personal Notepad</h1>
-    <textarea id="notepad" placeholder="Start typing your notes..."></textarea>
-    <div class="stats">
-      <span id="wordCount">Words: 0</span> | 
-      <span id="charCount">Characters: 0</span>
-    </div>
-    <div class="buttons">
-      <button id="clear">Clear Notes</button>
-      <button id="darkModeToggle">Enable Dark Mode</button>
-      <button id="download">Download Notes</button>
-      <select id="colorPicker">
-        <option value="">Select Text Color</option>
+    <nav>
+      <ul>
+        <li><a href="https://mithleshassistant.netlify.app/">Jarvis Assistant</a></li>
+        <li><a href="Advanced-Notepad-Editor.html">Advanced Notepad Editor</a></li>
+        <li><a href="Typing-Speed-Test.html">Typing Speed Test</a></li>
+        <li><a href="typing.html">Typing Speed Test 2.0</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="notepad-container">
+      <textarea id="notepad" aria-label="Personal Notepad" placeholder="Start typing your notes..."></textarea>
+      <div class="stats" aria-live="polite">
+        <span id="wordCount">Words: 0</span> | 
+        <span id="charCount">Characters: 0</span>
+      </div>
+    </section>
+
+    <section class="actions">
+      <button id="clear" aria-label="Clear notes">Clear Notes</button>
+      <button id="darkModeToggle" aria-label="Toggle dark mode">Enable Dark Mode</button>
+      <button id="download" aria-label="Download notes">Download Notes</button>
+      <label for="colorPicker">Text Color:</label>
+      <select id="colorPicker" aria-label="Change text color">
+        <option value="" selected>Select Text Color</option>
         <option value="red">Red</option>
         <option value="green">Green</option>
         <option value="blue">Blue</option>
         <option value="purple">Purple</option>
       </select>
-    </div>
-    
+    </section>
+  </main>
 
-    <div class="autosave-notification" id="autosaveNotification">Saved!</div>
-  
-  </div>
   <footer>
     <p>Powered by Mithlesh Prasad</p>
   </footer>
-  <script>
-    const textarea = document.getElementById('notepad');
-    const wordCountElement = document.getElementById('wordCount');
-    const charCountElement = document.getElementById('charCount');
-    const clearButton = document.getElementById('clear');
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const downloadButton = document.getElementById('download');
-    const colorPicker = document.getElementById('colorPicker');
-    const autosaveNotification = document.getElementById('autosaveNotification');
 
-    // Load saved note from localStorage
-    const savedNote = localStorage.getItem('notepadContent');
-    const savedColor = localStorage.getItem('notepadColor');
-    if (savedNote) {
-      textarea.value = savedNote;
-      updateStats();
-    }
-    if (savedColor) {
-      textarea.style.color = savedColor;
-      colorPicker.value = savedColor;
-    }
+  <div class="autosave-notification" id="autosaveNotification" role="alert">Saved!</div>
 
-    // Save note to localStorage on input
-    textarea.addEventListener('input', () => {
-      localStorage.setItem('notepadContent', textarea.value);
-      updateStats();
-      showAutosaveNotification();
-    });
-
-    // Change text color
-    colorPicker.addEventListener('change', () => {
-      const selectedColor = colorPicker.value;
-      textarea.style.color = selectedColor;
-      localStorage.setItem('notepadColor', selectedColor);
-    });
-
-    // Clear the notes
-    clearButton.addEventListener('click', () => {
-      textarea.value = '';
-      localStorage.removeItem('notepadContent');
-      updateStats();
-      alert('Notes cleared!');
-    });
-
-    // Toggle dark mode
-    let isDarkMode = false;
-    darkModeToggle.addEventListener('click', () => {
-      isDarkMode = !isDarkMode;
-      document.body.classList.toggle('dark-mode', isDarkMode);
-      darkModeToggle.textContent = isDarkMode ? 'Disable Dark Mode' : 'Enable Dark Mode';
-    });
-
-    // Download notes as a text file
-    downloadButton.addEventListener('click', () => {
-      const blob = new Blob([textarea.value], { type: 'text/plain' });
-      const anchor = document.createElement('a');
-      anchor.href = URL.createObjectURL(blob);
-      anchor.download = 'notes.txt';
-      anchor.click();
-    });
-
-    // Update word and character count
-    function updateStats() {
-      const text = textarea.value.trim();
-      const words = text.length === 0 ? 0 : text.split(/\s+/).length;
-      const characters = text.length;
-      wordCountElement.textContent = `Words: ${words}`;
-      charCountElement.textContent = `Characters: ${characters}`;
-    }
-
-    // Show "Saved!" notification
-    function showAutosaveNotification() {
-      autosaveNotification.style.display = 'block';
-      setTimeout(() => {
-        autosaveNotification.style.display = 'none';
-      }, 1000);
-    }
-
-    // Initialize stats
-    updateStats();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
