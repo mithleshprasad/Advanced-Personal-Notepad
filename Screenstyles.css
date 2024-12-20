@@ -1,0 +1,82 @@
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+p {
+    font-size: 1rem;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+/* Buttons */
+button {
+    font-size: 1rem;
+}
+
+/* Video Containers */
+#videoPreview,
+#recordedVideo {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+/* Footer */
+.footer {
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    p {
+        font-size: 0.9rem;
+    }
+
+    select, button {
+        font-size: 0.9rem;
+        width: 80%;
+    }
+
+    .text-center {
+        padding: 0 15px;
+    }
+
+    #recordingType {
+        width: 100%;
+    }
+
+    #videoContainer, #recordedVideoContainer {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    p {
+        font-size: 0.8rem;
+    }
+
+    select, button {
+        font-size: 0.8rem;
+        width: 90%;
+    }
+}
