@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jarvis Rock, Paper, Scissors</title>
+  <script src="https://cdn.jsdelivr.net/npm/brain.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      color: #fff;
+      text-align: center;
+      min-height: 100vh;
+
+    }
+
+    .game-container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      color: #00ffcc;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    .buttons button {
+      margin: 15px;
+      padding: 15px 40px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      color: white;
+      cursor: pointer;
+      transition: 0.4s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    }
+
+    .buttons button:hover {
+      background: linear-gradient(135deg, #00c6ff, #007bff);
+      transform: scale(1.1);
+      box-shadow: 0 10px 25px rgba(0, 255, 255, 0.5);
+    }
+
+    .buttons button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .buttons button:hover::after {
+      opacity: 1;
+    }
+
+    .results {
+      margin-top: 30px;
+    }
+
+    .results p {
+      font-size: 1.3rem;
+      opacity: 0;
+      animation: fadeIn 0.8s forwards;
+    }
+
+    .results span {
+      color: #00ffcc;
+      font-weight: bold;
+    }
+
+    .jarvis {
+      font-style: italic;
+      color: #ffcc00;
+      margin-top: 20px;
+      font-size: 1.1rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Jarvis: Rock, Paper, Scissors</h1>
+    <p>Make your choice:</p>
+    <div class="buttons">
+      <button onclick="playGame('rock')">Rock</button>
+      <button onclick="playGame('paper')">Paper</button>
+      <button onclick="playGame('scissors')">Scissors</button>
+    </div>
+    <div class="results">
+      <p id="user-move"></p>
+      <p id="ai-move"></p>
+      <p id="result"></p>
+    </div>
+    <p class="jarvis" id="jarvis-comment"></p>
+  </div>
+
+
+  <script>
+    const net = new brain.recurrent.LSTMTimeStep();
+    let trainingData = [[0, 1, 2]];
+    const moves = { rock: 0, paper: 1, scissors: 2 };
+    const reverseMoves = { 0: 'rock', 1: 'paper', 2: 'scissors' };
+
+    const trainAI = () => {
+      net.train(trainingData, {
+        iterations: 500,
+        log: false,
+      });
+    };
+
+    const predictMove = (input) => {
+      const prediction = net.run(input);
+      return Math.round(prediction) % 3;
+    };
+
+    const playGame = (userMove) => {
+      const userMoveNumber = moves[userMove];
+      const aiPrediction = predictMove(trainingData[trainingData.length - 1] || []);
+      const aiMove = (aiPrediction + 1) % 3;
+
+      document.getElementById('user-move').innerHTML = `You chose: <span>${userMove}</span>`;
+      document.getElementById('ai-move').innerHTML = `Jarvis chose: <span>${reverseMoves[aiMove]}</span>`;
+      document.getElementById('result').innerHTML = determineWinner(userMoveNumber, aiMove);
+
+      const jarvisComment = getJarvisComment(userMove, reverseMoves[aiMove]);
+      document.getElementById('jarvis-comment').innerText = jarvisComment;
+
+      speak(jarvisComment);
+
+      trainingData.push([userMoveNumber]);
+      if (trainingData.length > 10) trainingData.shift();
+      trainAI();
+    };
+
+    const determineWinner = (user, ai) => {
+      if (user === ai) return "It's a draw!";
+      if ((user === 0 && ai === 2) || (user === 1 && ai === 0) || (user === 2 && ai === 1)) {
+        return 'You win!';
+      }
+      return 'Jarvis wins!';
+    };
+
+    const getJarvisComment = (userMove, aiMove) => {
+      if (userMove === aiMove) {
+        return "Hmm, seems like we're evenly matched. Try again!";
+      } else if (
+        (userMove === "rock" && aiMove === "scissors") ||
+        (userMove === "paper" && aiMove === "rock") ||
+        (userMove === "scissors" && aiMove === "paper")
+      ) {
+        return "Ah, you outsmarted me this time. Well played!";
+      } else {
+        return "As expected. I remain victorious!";
+      }
+    };
+
+    const speak = (text) => {
+      const msg = new SpeechSynthesisUtterance();
+      msg.text = text;
+      msg.lang = 'en-US';
+      msg.rate = 1;
+      msg.pitch = 1;
+      window.speechSynthesis.speak(msg);
+    };
+
+    trainAI();
+  </script>
+</body>
+</html>

@@ -8,7 +8,9 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background-color: #f4f4f9;
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      color: #fff;
+      /* background-color: #f4f4f9; */
       transition: background-color 0.3s, color 0.3s;
     }
     .container {
@@ -34,7 +36,44 @@
     textarea:focus {
       border-color: #007BFF;
     }
-    .buttons {
+    .buttons button {
+      margin: 15px;
+      padding: 15px 40px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      color: white;
+      cursor: pointer;
+      transition: 0.4s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    }
+
+    .buttons button:hover {
+      background: linear-gradient(135deg, #00c6ff, #007bff);
+      transform: scale(1.1);
+      box-shadow: 0 10px 25px rgba(0, 255, 255, 0.5);
+    }
+
+    .buttons button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .buttons button:hover::after {
+      opacity: 1;
+    }
+    /* .buttons {
       margin-top: 10px;
       display: flex;
       justify-content: space-between;
@@ -54,7 +93,7 @@
     }
     button:hover {
       background-color: #0056b3;
-    }
+    } */
     select {
       padding: 10px;
       margin-left: 10px;
@@ -65,7 +104,7 @@
       margin-top: 10px;
       font-size: 14px;
       text-align: right;
-      color: #555;
+      color: #eee9e9;
     }
     .dark-mode {
       background-color: #222;
@@ -79,13 +118,13 @@
     .autosave-notification {
       text-align: center;
       font-size: 14px;
-      color: green;
+      color: rgb(229, 238, 229);
       display: none;
     }
      footer {
       text-align: center;
       margin-top: 20px;
       font-size: 14px;
-      color: #777;
+      color: #fdf9f9;
     }
   

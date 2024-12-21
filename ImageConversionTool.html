@@ -15,7 +15,7 @@
       <label for="uploadImage">Choose an Image</label>
     </div>
 
-    <div class="button-group">
+    <div class="buttons">
       <button id="convertToPNG">Convert to PNG</button>
       <button id="convertToJPG">Convert to JPG</button>
       <button id="convertToPDF">Convert to PDF</button>
@@ -25,7 +25,10 @@
       <canvas id="canvas" style="display:none;"></canvas>
       <a id="downloadLink" style="display:none;">Download Converted File</a>
     </div>
-
+    <div class="preview-section">
+      <img id="previewImage" alt="Preview" style="max-width: 100%; display: none;" />
+    </div>
+    
     <div id="error-message" class="error-message"></div>
   </div>
 

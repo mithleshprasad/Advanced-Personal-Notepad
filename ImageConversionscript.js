@@ -22,6 +22,11 @@ function handleImageUpload(event) {
     const img = new Image();
     img.onload = function () {
       imageData = img;
+
+      // Preview the uploaded image
+      const previewImage = document.getElementById("previewImage");
+      previewImage.src = img.src;
+      previewImage.style.display = "block";
     };
     img.src = e.target.result;
   };

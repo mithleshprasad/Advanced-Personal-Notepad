@@ -5,28 +5,34 @@
 }
 
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f7f6;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+  color: #fff;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
-  background-color: white;
+  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+  /* background-color: white; */
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px;
+  max-width: 800px;
   text-align: center;
 }
 
 h1 {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #333;
+  color: #f4eded;
 }
 
 .upload-section {
@@ -47,6 +53,44 @@ h1 {
 
 .upload-section label:hover {
   background-color: #45a049;
+}
+
+.buttons button {
+  margin: 15px;
+  padding: 15px 40px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #007bff, #00c6ff);
+  color: white;
+  cursor: pointer;
+  transition: 0.4s;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+}
+
+.buttons button:hover {
+  background: linear-gradient(135deg, #00c6ff, #007bff);
+  transform: scale(1.1);
+  box-shadow: 0 10px 25px rgba(0, 255, 255, 0.5);
+}
+
+.buttons button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.buttons button:hover::after {
+  opacity: 1;
 }
 
 .button-group button {
@@ -71,6 +115,16 @@ h1 {
 
 #error-message {
   margin-top: 20px;
-  color: red;
+  color: rgb(202, 245, 11);
   font-weight: bold;
+}
+.preview-section{
+  max-width: 100%;
+  height: 50vh;
+ align-items: center;
+}
+#previewImage{
+height: 200px;
+width: 200px;
+border-radius:1px solid  white 5%;
 }
