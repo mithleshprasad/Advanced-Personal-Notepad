@@ -1,3 +1,40 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Conversion Tool</title>
+  <link rel="stylesheet" href="ImageConversionstyles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Conversion Tool</h1>
+    <div class="upload-section">
+      <input type="file" id="uploadImage" accept="image/*" />
+      <label for="uploadImage">Choose an Image</label>
+    </div>
+    <div class="preview-section">
+      <img id="previewImage" alt="Preview" style="max-width: 100%; display: none;" />
+    </div>
+    <div class="buttons">
+      <button id="convertToPNG">Convert to PNG</button>
+      <button id="convertToJPG">Convert to JPG</button>
+      <button id="convertToPDF">Convert to PDF</button>
+    </div>
+
+    <div class="output-section">
+      <canvas id="canvas" style="display:none;"></canvas>
+      <a id="downloadLink" style="display:none;">Download Converted File</a>
+    </div>
+   
+    
+    <div id="error-message" class="error-message"></div>
+  </div>
+
+  <script src="ImageConversionscript.js"></script>
+</body>
+</html> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +51,18 @@
       <input type="file" id="uploadImage" accept="image/*" />
       <label for="uploadImage">Choose an Image</label>
     </div>
-
+    
+    <div class="input-section">
+      <label for="imageWidth">Width (px):</label>
+      <input type="number" id="imageWidth" min="1" placeholder="e.g., 300">
+      <label for="imageHeight">Height (px):</label>
+      <input type="number" id="imageHeight" min="1" placeholder="e.g., 300">
+    </div>
+    
+    <div class="preview-section">
+      <img id="previewImage" alt="Preview" style="max-width: 100%; display: none;" />
+    </div>
+    
     <div class="buttons">
       <button id="convertToPNG">Convert to PNG</button>
       <button id="convertToJPG">Convert to JPG</button>
@@ -25,10 +73,7 @@
       <canvas id="canvas" style="display:none;"></canvas>
       <a id="downloadLink" style="display:none;">Download Converted File</a>
     </div>
-    <div class="preview-section">
-      <img id="previewImage" alt="Preview" style="max-width: 100%; display: none;" />
-    </div>
-    
+
     <div id="error-message" class="error-message"></div>
   </div>
 
