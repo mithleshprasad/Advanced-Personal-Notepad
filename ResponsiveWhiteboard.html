@@ -1,28 +1,52 @@
-        img.onload = () => {
-          saveState();
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          if (toggleGrid.checked) drawGrid();
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Whiteboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Advanced Whiteboard</h1>
+    <div class="toolbar">
+      <label for="toolPicker">Tool:</label>
+      <select id="toolPicker">
+        <option value="brush">Brush</option>
+        <option value="freehand">Free Hand</option>
+        <option value="eraser">Eraser</option>
+        <option value="rectangle">Rectangle</option>
+        <option value="circle">Circle</option>
+        <option value="line">Line</option>
+        <option value="text">Text</option>
+      </select>
 
-    toggleGrid.addEventListener('change', () => {
-      redraw();
-    });
+      <label for="colorPicker">Color:</label>
+      <input type="color" id="colorPicker" value="#000000">
 
-    colorPicker.addEventListener('input', (e) => {
-      brushColor = e.target.value;
-    });
+      <label for="bgColorPicker">Background:</label>
+      <input type="color" id="bgColorPicker" value="#ffffff">
 
-    sizeSlider.addEventListener('input', (e) => {
-      brushSize = e.target.value;
-    });
+      <label for="sizePicker">Size:</label>
+      <input type="range" id="sizePicker" min="1" max="20" value="5">
 
-    // Initialize canvas with grid
-    saveState();
-    if (toggleGrid.checked) drawGrid();
-  </script>
+      <button id="gridButton">Toggle Grid</button>
+      <button id="undoButton">Undo</button>
+      <button id="redoButton">Redo</button>
+      <button id="clearButton">Clear</button>
+      <button id="saveButton">Save</button>
+      <button id="loadButton">Load Previous</button>
+      <button id="downloadButton">Download</button>
+    </div>
+    <canvas id="whiteboard" width="800" height="600"></canvas>
+    <script src="js/whiteboard.js"></script>
+  </main>
 </body>
 </html>
