@@ -1,0 +1,28 @@
+        img.onload = () => {
+          saveState();
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          if (toggleGrid.checked) drawGrid();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    toggleGrid.addEventListener('change', () => {
+      redraw();
+    });
+
+    colorPicker.addEventListener('input', (e) => {
+      brushColor = e.target.value;
+    });
+
+    sizeSlider.addEventListener('input', (e) => {
+      brushSize = e.target.value;
+    });
+
+    // Initialize canvas with grid
+    saveState();
+    if (toggleGrid.checked) drawGrid();
+  </script>
+</body>
+</html>
