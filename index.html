@@ -3,201 +3,227 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Advanced Personal Notepad with autosave, dark mode, and downloadable notes.">
-  <title>Advanced Personal Notepad</title>
-  <!-- <link rel="stylesheet" href="style.css"> -->
+  <meta name="description" content="Dashboard with Notepad, Tools, and Metrics.">
+  <title>Advanced Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* General Styles */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
       background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
       color: #fff;
       transition: background-color 0.3s, color 0.3s;
-    }
-
-    header {
-      text-align: center;
-      padding: 20px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
-    main {
-      width: 90%;
-      max-width: 800px;
-    }
-
-    .notepad-container {
-      margin-bottom: 20px;
-    }
-
-    textarea {
-      width: 100%;
-      height: 250px;
-      padding: 0;
-      font-size: 16px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      resize: none;
-      outline: none;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      transition: border-color 0.3s, background-color 0.3s;
-    }
-
-    textarea:focus {
-      border-color: #007BFF;
     }
     .dark-mode {
       background-color: #222;
       color: #fff;
     }
-    .dark-mode textarea {
-      background-color: #333;
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Navbar */
+    nav {
+      background: #000;
+      padding: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    nav ul li {
+      display: inline;
+    }
+    nav ul li a {
       color: #fff;
-      border-color: #555;
+      font-size: 18px;
+    }
+    nav ul li a:hover {
+      color: #00c6ff;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Notepad Section */
+    #notepad-section {
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    textarea {
+      width: 100%;
+      height: 250px;
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+      outline: none;
     }
     .stats {
-      margin-top: 10px;
-      font-size: 14px;
       text-align: right;
-      color: #eee9e9;
+      margin-top: 5px;
+      font-size: 14px;
     }
 
-    .actions {
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: space-between;
+    /* Tools Section */
+    .tools-container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
     }
-
-    .actions button,
-    .actions select {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      background: linear-gradient(135deg, #007bff, #00c6ff);
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .actions button:hover {
-      background: linear-gradient(135deg, #00c6ff, #007bff);
-    }
-
-    .actions select {
-      background-color: #fff;
+    .tool-card {
+      background: #fff;
       color: #333;
-      border: 1px solid #ccc;
+      text-align: center;
+      padding: 15px;
+      border-radius: 8px;
+      transition: transform 0.3s;
+    }
+    .tool-card:hover {
+      transform: scale(1.05);
     }
 
+    /* Widgets Section */
+    .widgets-container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .widget {
+      background: #333;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .widget h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .widget p {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    /* Footer */
     footer {
       text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #fdf9f9;
+      padding: 20px;
+      background: #000;
+      color: #fff;
+    }
+    footer a {
+      margin: 0 10px;
+      color: #00c6ff;
+      font-size: 20px;
     }
 
-    .autosave-notification {
-      text-align: center;
-      font-size: 14px;
-      color: rgb(229, 238, 229);
-      display: none;
-    }
-
+    /* Responsive Design */
     @media (max-width: 768px) {
-      header h1 {
-        font-size: 1.5rem;
-      }
-
-      .actions {
+      nav ul {
         flex-direction: column;
-        align-items: center;
+        gap: 10px;
       }
-
-      .actions button,
-      .actions select {
-        width: 100%;
+      .tools-container, .widgets-container {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
+  <!-- Navbar -->
+  <nav>
+    <span>Dashboard</span>
+    <ul>
+      <li><a href="#notepad-section">Notepad</a></li>
+      <li><a href="#tools-section">Tools</a></li>
+      <li><a href="#metrics-section">Metrics</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header -->
   <header>
-    <h1>Advanced Personal Notepad</h1>
+    <h1>Advanced Dashboard</h1>
   </header>
 
-  <main>
-    <section class="notepad-container">
-      <textarea id="notepad" aria-label="Personal Notepad" placeholder="Start typing your notes..."></textarea>
-      <div class="stats" aria-live="polite">
-        <span id="wordCount">Words: 0</span> | 
-        <span id="charCount">Characters: 0</span>
-      </div>
-    </section>
+  <!-- Notepad Section -->
+  <section id="notepad-section">
+    <textarea id="notepad" placeholder="Start typing your notes..."></textarea>
+    <div class="stats">
+      <span id="wordCount">Words: 0</span> | 
+      <span id="charCount">Characters: 0</span>
+    </div>
+  </section>
 
-    <section class="actions">
-      <button id="clear" aria-label="Clear notes">Clear Notes</button>
-      <button id="darkModeToggle" aria-label="Toggle dark mode">Enable Dark Mode</button>
-      <button id="download" aria-label="Download notes">Download Notes</button>
-      <label for="colorPicker">Text Color:</label>
-      <select id="colorPicker" aria-label="Change text color">
-        <option value="" selected>Select Text Color</option>
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="blue">Blue</option>
-        <option value="purple">Purple</option>
-      </select>
-    </section>
+  <!-- Tools Section -->
+  <section id="tools-section" class="tools-container">
+    <div class="tool-card"><a href="rockpeper.html">Rock, Paper, Scissors</a></div>
+    <div class="tool-card"><a href="Screen&WebcamRecorder.html">Screen Webcam Recorder</a></div>
+    <div class="tool-card"><a href="ImageConversionTool.html">Image Conversion Tool</a></div>
+    <div class="tool-card"><a href="Advanced-Notepad-Editor.html">Notepad Editor</a></div>
+    <div class="tool-card"><a href="Typing-Speed-Test.html">Typing Speed Test</a></div>
+  </section>
 
-    <section class="actions">
-      <a href="https://mithleshassistant.netlify.app/">
-        <button>Jarvis Assistant!</button>
-      </a>
-      <a href="rockpeper.html">
-        <button>Jarvis Rock, Paper, Scissors!</button>
-      </a>
-      <a href="Screen&WebcamRecorder.html">
-        <button>Screen Webcam Recorder!</button>
-      </a>
-      <a href="ImageConversionTool.html">
-        <button>Image Conversion Tool!</button>
-      </a>
-      <a href="Advanced-Notepad-Editor.html">
-        <button>Advanced Notepad Editor!</button>
-      </a>
-      <a href="Typing-Speed-Test.html">
-        <button>Typing Speed Test!</button>
-      </a>
-      <a href="typing.html">
-        <button>Upcoming Typing Speed Test 2.0!</button>
-      </a>
-      <a href="ResponsiveWhiteboard.html">
-        <button>Responsive Whiteboard</button>
-      </a>
-      <a href="ip.html">
-        <button>IP Tracker</button>
-      </a>
-    </section>
-  </main>
+  <!-- Widgets Section -->
+  <section id="metrics-section" class="widgets-container">
+    <div class="widget">
+      <h3>Total Notes</h3>
+      <p>12</p>
+    </div>
+    <div class="widget">
+      <h3>Games Played</h3>
+      <p>25</p>
+    </div>
+  </section>
 
+  <!-- Footer -->
   <footer>
-    <p class="text-light">Powered by Mithlesh Prasad</p>
+    <p>Powered by Mithlesh Prasad</p>
+    <a href="https://linkedin.com"><i class="fab fa-linkedin"></i></a>
+    <a href="https://github.com"><i class="fab fa-github"></i></a>
   </footer>
 
-  <div class="autosave-notification" id="autosaveNotification" role="alert">Saved!</div>
+  <script>
+    // Notepad Functionality
+    const notepad = document.getElementById("notepad");
+    const wordCount = document.getElementById("wordCount");
+    const charCount = document.getElementById("charCount");
 
-  <script src="script.js"></script>
+    notepad.addEventListener("input", () => {
+      const text = notepad.value;
+      wordCount.textContent = `Words: ${text.split(/\s+/).filter(Boolean).length}`;
+      charCount.textContent = `Characters: ${text.length}`;
+    });
+
+    // Dark Mode Toggle
+    const body = document.body;
+    const toggleDarkMode = document.createElement("button");
+    toggleDarkMode.textContent = "Toggle Dark Mode";
+    toggleDarkMode.style.margin = "20px";
+    toggleDarkMode.addEventListener("click", () => {
+      body.classList.toggle("dark-mode");
+    });
+    document.body.prepend(toggleDarkMode);
+  </script>
 </body>
 </html>
