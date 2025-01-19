@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IP Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    input, button {
+      width: calc(100% - 20px);
+      max-width: 400px;
+      padding: 10px;
+      margin: 10px auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .output {
+      text-align: left;
+      background: #f9f9f9;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .flag {
+      height: 20px;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>IP Tracker</h1>
+    <p>Enter an IP address to track its details, or leave blank to fetch your own IP information.</p>
+    <input type="text" id="ipInput" placeholder="Enter IP Address (optional)">
+    <button onclick="trackIP()">Track IP</button>
+    <div id="output" class="output" style="display: none;"></div>
+  </div>
+
+  <script>
+    const API_KEY = "3d041b5ee05a8b61887acea31473ecc2";
+    const BASE_URL = "http://api.ipstack.com/";
+
+    async function trackIP() {
+      const ipInput = document.getElementById("ipInput").value || "check";
+      const url = `${BASE_URL}${ipInput}?access_key=${API_KEY}`;
+      const outputDiv = document.getElementById("output");
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Handle errors
+        if (data.error) {
+          outputDiv.innerHTML = `<strong style="color: red;">Error:</strong> ${data.error.info}`;
+          outputDiv.style.display = "block";
+          return;
+        }
+
+        // Display the IP data in a table format
+        outputDiv.innerHTML = `
+          <h2>IP Details</h2>
+          <table>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+            <tr>
+              <td>IP Address</td>
+              <td>${data.ip}</td>
+            </tr>
+            <tr>
+              <td>Type</td>
+              <td>${data.type}</td>
+            </tr>
+            <tr>
+              <td>Continent</td>
+              <td>${data.continent_name} (${data.continent_code})</td>
+            </tr>
+            <tr>
+              <td>Country</td>
+              <td>
+                ${data.country_name} (${data.country_code})
+                <img class="flag" src="${data.location.country_flag}" alt="Flag">
+              </td>
+            </tr>
+            <tr>
+              <td>Region</td>
+              <td>${data.region_name} (${data.region_code})</td>
+            </tr>
+            <tr>
+              <td>City</td>
+              <td>${data.city || "N/A"}</td>
+            </tr>
+            <tr>
+              <td>ZIP Code</td>
+              <td>${data.zip || "N/A"}</td>
+            </tr>
+            <tr>
+              <td>Latitude</td>
+              <td>${data.latitude}</td>
+            </tr>
+            <tr>
+              <td>Longitude</td>
+              <td>${data.longitude}</td>
+            </tr>
+            <tr>
+              <td>Calling Code</td>
+              <td>+${data.location.calling_code}</td>
+            </tr>
+            <tr>
+              <td>Languages</td>
+              <td>
+                ${data.location.languages
+                  .map(lang => `${lang.name} (${lang.native})`)
+                  .join(", ")}
+              </td>
+            </tr>
+            <tr>
+              <td>Capital</td>
+              <td>${data.location.capital}</td>
+            </tr>
+            <tr>
+              <td>Is in EU</td>
+              <td>${data.location.is_eu ? "Yes" : "No"}</td>
+            </tr>
+          </table>
+        `;
+        outputDiv.style.display = "block";
+      } catch (error) {
+        console.error("Error fetching IP details:", error);
+        outputDiv.innerHTML = `<strong style="color: red;">Error:</strong> Unable to fetch IP details.`;
+        outputDiv.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
